@@ -71,6 +71,21 @@ void free_matrix(int **matrix, int n)
     free(matrix);
 }
 
+size_t count_edges(int **matrix, int n)
+{
+    size_t count = 0;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (matrix[i][j] == 1) {
+                count++;
+            }
+        }
+    }
+
+    return count;
+}
+
 int main(void)
 {
     int n;
@@ -90,6 +105,9 @@ int main(void)
     generate_graph(matrix, n);
     print_matrix(matrix, n);
 
+    printf("\nGraph size (number of edges): %zu\n",
+       count_edges(matrix, n));
+       
     free_matrix(matrix, n);
 
     return 0;
