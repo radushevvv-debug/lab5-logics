@@ -62,15 +62,6 @@ void print_matrix(int **matrix, int n)
     }
 }
 
-void free_matrix(int **matrix, int n)
-{
-    for (int i = 0; i < n; i++) {
-        free(matrix[i]);
-    }
-
-    free(matrix);
-}
-
 size_t count_edges(int **matrix, int n)
 {
     size_t count = 0;
@@ -84,6 +75,47 @@ size_t count_edges(int **matrix, int n)
     }
 
     return count;
+}
+
+int vertex_degree(const int *row, int n)
+{
+    int degree = 0;
+
+    for (int j = 0; j < n; j++) {
+        degree += row[j];
+    }
+
+    return degree;
+}
+
+void print_vertices_by_degree(int **matrix, int n,
+                              int degree, const char *title)
+{
+    int found = 0;
+
+    printf("%s:", title);
+
+    for (int i = 0; i < n; i++) {
+        if (vertex_degree(matrix[i], n) == degree) {
+            printf(" %d", i + 1);
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf(" none");
+    }
+
+    printf("\n");
+}
+
+void free_matrix(int **matrix, int n)
+{
+    for (int i = 0; i < n; i++) {
+        free(matrix[i]);
+    }
+
+    free(matrix);
 }
 
 int main(void)
@@ -106,8 +138,24 @@ int main(void)
     print_matrix(matrix, n);
 
     printf("\nGraph size (number of edges): %zu\n",
-       count_edges(matrix, n));
-       
+           count_edges(matrix, n));
+
+    printf("\nVertex degrees:\n");
+
+    for (int i = 0; i < n; i++) {
+        printf("Vertex %d: %d\n", i + 1,
+               vertex_degree(matrix[i], n));
+    }
+
+    print_vertices_by_degree(matrix, n, 0,
+                             "Isolated vertices");
+
+    print_vertices_by_degree(matrix, n, 1,
+                             "Pendant vertices");
+
+    print_vertices_by_degree(matrix, n, n - 1,
+                             "Dominating vertices");
+
     free_matrix(matrix, n);
 
     return 0;
